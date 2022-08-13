@@ -14,7 +14,7 @@ public class UserRepositoryImpl implements UserRepository {
     private long id;
 
     @Override
-    public Optional<User> findUserById(Long id) {
+    public Optional<User> findById(Long id) {
         return Optional.ofNullable(users.get(id));
     }
 

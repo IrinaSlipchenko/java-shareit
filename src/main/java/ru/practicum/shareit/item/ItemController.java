@@ -7,36 +7,45 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
-/**
- * // TODO .
- */
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.List;
+
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
-    ItemService itemService;
+    private final ItemService itemService;
+    private final ItemMapper itemMapper;
+
 
     @PostMapping
-    public ItemDto create(@RequestBody ItemDto itemDto,
-                       @RequestHeader("X-Sharer-User-Id") Long userId) {
-        return null;
+    public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+        Item item = itemMapper.toItem(itemDto, userId);
+        return itemMapper.toItemDto(itemService.create(item));
     }
 
-    /*
-    Редактировать вещь может только её владелец.
-    Изменить можно название, описание и статус доступа.
-     */
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestBody ItemDto itemDto,
-                       @RequestHeader("X-Sharer-User-Id") Long userId,
-                       @PathVariable Long itemId) {
-        return null;
+    public ItemDto update(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") @NotNull Long userId, @PathVariable Long itemId) {
+        Item item = itemMapper.toItem(itemDto, userId);
+        item.setId(itemId);
+        return itemMapper.toItemDto(itemService.update(item));
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@PathVariable("itemId") Long itemId){
+    public ItemDto findItem(@PathVariable("itemId") Long itemId) {
         Item item = itemService.findItemById(itemId);
-        return ItemMapper.toItemDto(item);
+        return itemMapper.toItemDto(item);
+    }
+
+    @GetMapping
+    public List<Item> findAll(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+        return itemService.findAll(userId);
+    }
+
+    @GetMapping("/search")
+    public List<Item> search(@RequestParam("text") String text) {
+        return itemService.searchByKeyword(text);
     }
 
 }

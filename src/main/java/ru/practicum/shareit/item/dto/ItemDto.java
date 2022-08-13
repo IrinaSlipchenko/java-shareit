@@ -2,7 +2,9 @@ package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.user.model.User;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * // TODO .
@@ -11,10 +13,11 @@ import ru.practicum.shareit.user.model.User;
 @Builder
 public class ItemDto {
     private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String description;
-    private Boolean availableStatus;
-    private User owner; // или хранить id юзера - владельца ?
-    private String request;
+    @NotNull
+    private Boolean available;
 
 }

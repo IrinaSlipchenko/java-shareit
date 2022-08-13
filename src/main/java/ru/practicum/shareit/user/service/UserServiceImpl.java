@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -16,12 +17,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Long id) {
-        return userRepository.findUserById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
     public User create(User user) {
+        if (user.getName() == null || user.getEmail() == null) {
+            throw new ValidationException("invalid fields");
+        }
         return userRepository.create(user);
     }
 
