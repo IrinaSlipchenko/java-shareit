@@ -1,8 +1,8 @@
 package ru.practicum.shareit.item.repository;
 
-import ru.practicum.shareit.BaseRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.practicum.shareit.item.model.Item;
 
-public interface ItemRepository extends BaseRepository<Item> {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 
 }

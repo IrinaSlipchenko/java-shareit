@@ -24,7 +24,6 @@ public class ItemMapperImpl implements ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .ownerId(userId)
                 .build();
     }
 }

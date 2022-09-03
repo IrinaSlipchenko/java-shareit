@@ -14,30 +14,31 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
-
     private final ItemRepository itemRepository;
     private final UserService userService;
 
-    @Override
-    public Item findItemById(Long itemId) {
-        return itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("Item not found"));
-    }
 
     @Override
-    public Item create(Item item) {
-        validateUser(item.getOwnerId());
-        return itemRepository.create(item);
+    public Item findItemById(Long id) {
+        return itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item not found"));
     }
 
     @Override
     public List<Item> findAll(Long userId) {
-        return itemRepository.findAll().stream().filter(item -> item.getOwnerId().equals(userId)).collect(Collectors.toList());
+        return itemRepository.findAll().stream().filter(item ->
+                item.getOwner().getId().equals(userId)).collect(Collectors.toList());
+    }
+
+    @Override
+    public Item create(Item item) {
+        validateUser(item.getOwner().getId());
+        return itemRepository.save(item);
     }
 
     @Override
     public Item update(Item item) {
-        validateUser(item.getOwnerId());
-        return itemRepository.update(item);
+        validateUser(item.getOwner().getId());
+        return itemRepository.save(item);
     }
 
     @Override
