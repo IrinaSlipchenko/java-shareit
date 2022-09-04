@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
@@ -18,15 +19,24 @@ public class ItemController {
     private final ItemService itemService;
     private final ItemMapper itemMapper;
 
+    @PostMapping("/{itemId}/comment")
+    public Comment createComment(@RequestBody Comment comment, @PathVariable Long itemId) {
+
+        return null;
+    }
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ItemDto create(@Valid @RequestBody ItemDto itemDto,
+                          @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
         Item item = itemMapper.toItem(itemDto, userId);
         return itemMapper.toItemDto(itemService.create(item));
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") @NotNull Long userId, @PathVariable Long itemId) {
+    public ItemDto update(@RequestBody ItemDto itemDto,
+                          @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                          @PathVariable Long itemId) {
+
         Item item = itemMapper.toItem(itemDto, userId);
         item.setId(itemId);
         return itemMapper.toItemDto(itemService.update(item));
@@ -39,13 +49,13 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<Item> findAll(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
-        return itemService.findAll(userId);
+    public List<ItemDto> findAll(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+        return itemMapper.toItemDto(itemService.findAll(userId));
     }
 
     @GetMapping("/search")
-    public List<Item> search(@RequestParam("text") String text) {
-        return itemService.searchByKeyword(text);
+    public List<ItemDto> search(@RequestParam("text") String text) {
+        return itemMapper.toItemDto(itemService.searchByKeyword(text));
     }
 
 }

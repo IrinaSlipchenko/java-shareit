@@ -7,9 +7,7 @@ import ru.practicum.shareit.user.model.User;
 import javax.persistence.*;
 import java.util.Objects;
 
-/**
- * This class describes the item for rent.
- */
+
 @Getter
 @Setter
 @Builder
@@ -17,6 +15,7 @@ import java.util.Objects;
 @Table(name = "items")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,4 +40,6 @@ public class Item {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+
 }

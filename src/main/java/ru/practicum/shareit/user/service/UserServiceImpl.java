@@ -20,7 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("User not found"));
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
     @Override
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             return userRepository.save(user);
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new ConflictException("email already in use");
         }
     }
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         patchUser(updateUser, oldUser);  // mutate old user
         try {
             return userRepository.save(oldUser);
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new ConflictException("email already in use");
         }
     }

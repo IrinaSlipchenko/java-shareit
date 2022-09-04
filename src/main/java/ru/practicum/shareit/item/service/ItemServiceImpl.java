@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,12 +14,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
-    private final UserService userService;
 
 
     @Override
     public Item findItemById(Long id) {
-        return itemRepository.findById(id).orElseThrow(() -> new NotFoundException("Item not found"));
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Item not found"));
     }
 
     @Override
@@ -31,14 +30,17 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item create(Item item) {
-        validateUser(item.getOwner().getId());
         return itemRepository.save(item);
     }
 
     @Override
-    public Item update(Item item) {
-        validateUser(item.getOwner().getId());
-        return itemRepository.save(item);
+    public Item update(Item updateItem) {
+        Item oldItem = findItemById(updateItem.getId());
+        if (!oldItem.getOwner().equals(updateItem.getOwner())) {
+            throw new NotFoundException("wrong owner");
+        }
+        patchItem(updateItem, oldItem);  // mutate old Item
+        return itemRepository.save(oldItem);
     }
 
     @Override
@@ -54,7 +56,18 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
-    private void validateUser(Long id) {
-        userService.findUserById(id);
+    public void patchItem(Item updateItem, Item oldItem) {
+        if (updateItem.getName() != null) {
+            oldItem.setName(updateItem.getName());
+        }
+        if (updateItem.getDescription() != null) {
+            oldItem.setDescription(updateItem.getDescription());
+        }
+        if (updateItem.getAvailable() != null) {
+            oldItem.setAvailable(updateItem.getAvailable());
+        }
     }
+
+
+    // Реализуйте логику по добавлению нового комментария к вещи в сервисе
 }
