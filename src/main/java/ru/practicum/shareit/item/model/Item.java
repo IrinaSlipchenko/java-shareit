@@ -28,6 +28,7 @@ public class Item {
     @JoinColumn(name = "owner_id")
     private User owner;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
