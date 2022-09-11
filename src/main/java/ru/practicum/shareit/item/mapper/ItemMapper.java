@@ -8,7 +8,7 @@ import java.util.List;
 public interface ItemMapper {
     ItemDto toItemDto(Item item);
 
-    List<ItemDto> toItemDto(List<Item> item);
+    List<ItemDto> toItemDto(List<Item> items);
 
     Item toItem(ItemDto itemDto, Long id);
 }

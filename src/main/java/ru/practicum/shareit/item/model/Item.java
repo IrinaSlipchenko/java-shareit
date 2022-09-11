@@ -15,7 +15,6 @@ import java.util.Objects;
 @Table(name = "items")
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,6 +40,4 @@ public class Item {
     public int hashCode() {
         return getClass().hashCode();
     }
-
-
 }

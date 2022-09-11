@@ -25,3 +25,12 @@ CREATE TABLE IF NOT EXISTS bookings
     item_id       BIGINT REFERENCES items (id)
 
 );
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    id           BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    text_comment VARCHAR(250),
+    author_id    BIGINT REFERENCES users (id),
+    item_id      BIGINT REFERENCES items (id),
+    created      TIMESTAMP WITHOUT TIME ZONE
+);

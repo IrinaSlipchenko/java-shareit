@@ -2,18 +2,26 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.exception.ValidationException;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
+    private final CommentRepository commentRepository;
 
 
     @Override
@@ -56,6 +64,18 @@ public class ItemServiceImpl implements ItemService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public Comment createComment(Comment comment) {
+        User user = comment.getAuthor();
+        Item item = comment.getItem();
+        user.getBookings().stream().filter(booking ->
+                        Objects.equals(booking.getItem(), item) &&
+                        Objects.equals(booking.getStatus(), Status.APPROVED) &&
+                        booking.getStart().isBefore(LocalDateTime.now()))
+                .findFirst().orElseThrow(() -> new ValidationException("Only bookmakers can create comments"));
+        return commentRepository.save(comment);
+    }
+
     public void patchItem(Item updateItem, Item oldItem) {
         if (updateItem.getName() != null) {
             oldItem.setName(updateItem.getName());
@@ -67,7 +87,4 @@ public class ItemServiceImpl implements ItemService {
             oldItem.setAvailable(updateItem.getAvailable());
         }
     }
-
-
-    // Реализуйте логику по добавлению нового комментария к вещи в сервисе
 }
