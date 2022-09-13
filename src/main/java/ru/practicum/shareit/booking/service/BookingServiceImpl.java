@@ -20,10 +20,11 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class BookingServiceImpl {
+public class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final UserService userService;
 
+    @Override
     public Booking create(Booking booking) {
         Item item = booking.getItem();
         if (!booking.getStart().isBefore(booking.getEnd())) {
@@ -40,6 +41,7 @@ public class BookingServiceImpl {
         throw new ValidationException("item is unavailable");
     }
 
+    @Override
     public Booking findBookingById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("booking not found"));
@@ -51,6 +53,7 @@ public class BookingServiceImpl {
         throw new NotFoundException("wrong user");
     }
 
+    @Override
     public Booking approveBooking(Long bookingId, Long userId, Boolean approved) {
         Booking booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("booking not found"));
@@ -70,6 +73,7 @@ public class BookingServiceImpl {
         return bookingRepository.save(booking);
     }
 
+    @Override
     public List<Booking> allBooking(State state, Long userId) {
 
         User user = userService.findUserById(userId);
@@ -79,6 +83,7 @@ public class BookingServiceImpl {
         return getBookingsByState(state, bookings);
     }
 
+    @Override
     public List<Booking> allBookingByOwner(State state, Long userId) {
 
         User user = userService.findUserById(userId);

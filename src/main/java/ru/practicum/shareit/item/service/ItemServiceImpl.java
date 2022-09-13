@@ -117,13 +117,6 @@ public class ItemServiceImpl implements ItemService {
                 .sorted()
                 .filter(booking -> booking.getStart().isAfter(current))
                 .findFirst().orElse(null);
-
-//        if(nextBooking == null) return null;
-//
-//        return ShortBookingDto.builder()
-//                .id(nextBooking.getId())
-//                .bookerId(nextBooking.getBooker().getId())
-//                .build();
     }
 
     private Booking getLastBooking(List<Booking> bookings) {
@@ -134,11 +127,5 @@ public class ItemServiceImpl implements ItemService {
                 .filter(booking -> booking.getEnd().isBefore(current))
                 .findFirst().orElse(null);
 
-//        if(lastBooking == null) return null;
-//
-//        return ShortBookingDto.builder()
-//                .id(lastBooking.getId())
-//                .bookerId(lastBooking.getBooker().getId())
-//                .build();
     }
 }

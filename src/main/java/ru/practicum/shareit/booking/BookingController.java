@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingInputDto;
 import ru.practicum.shareit.booking.dto.BookingOutputDto;
-import ru.practicum.shareit.booking.mapper.BookingMapperImpl;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
-import ru.practicum.shareit.booking.service.BookingServiceImpl;
+import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -18,8 +18,8 @@ import java.util.List;
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
 public class BookingController {
-    private final BookingServiceImpl bookingService;
-    private final BookingMapperImpl bookingMapper;
+    private final BookingService bookingService;
+    private final BookingMapper bookingMapper;
 
     @PostMapping
     public BookingOutputDto create(@Valid @RequestBody BookingInputDto bookingInputDto,

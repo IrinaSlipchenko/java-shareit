@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
@@ -22,8 +21,6 @@ public class ItemMapperImpl implements ItemMapper {
     private final UserService userService;
     private final ItemService itemService;
     private final CommentMapper commentMapper;
-    private final BookingRepository bookingRepository;
-
 
     @Override
     public Item toItem(ItemDto itemDto, Long userId) {
@@ -39,9 +36,6 @@ public class ItemMapperImpl implements ItemMapper {
     public ItemDto toItemDto(Item item) {
         List<Comment> comments = itemService.findCommentByItem(item);
         List<CommentDto> commentsDto = commentMapper.toCommentDto(comments);
-
-        List<Booking> bookings = bookingRepository.findAllByItem(item);
-
 
         return ItemDto.builder()
                 .id(item.getId())
@@ -66,5 +60,4 @@ public class ItemMapperImpl implements ItemMapper {
                 .bookerId(booking.getBooker().getId())
                 .build();
     }
-
 }

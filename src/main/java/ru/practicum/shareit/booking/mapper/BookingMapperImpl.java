@@ -15,11 +15,12 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class BookingMapperImpl {
+public class BookingMapperImpl implements BookingMapper {
     private final ItemService itemService;
     private final UserService userService;
 
 
+    @Override
     public Booking toBooking(BookingInputDto bookingInputDto, Long bookerId) {
 
         return Booking.builder()
@@ -30,6 +31,7 @@ public class BookingMapperImpl {
                 .build();
     }
 
+    @Override
     public BookingOutputDto toBookingDto(Booking booking) {
         return BookingOutputDto.builder()
                 .id(booking.getId())
@@ -41,6 +43,7 @@ public class BookingMapperImpl {
                 .build();
     }
 
+    @Override
     public List<BookingOutputDto> toBookingDto(List<Booking> bookings) {
         return bookings.stream().map(this::toBookingDto).collect(Collectors.toList());
     }
