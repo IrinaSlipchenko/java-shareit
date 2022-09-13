@@ -45,8 +45,8 @@ public class Booking implements Comparable<Booking> {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
+        if (this == obj) return true;
+        if (obj == null || Hibernate.getClass(this) != Hibernate.getClass(obj)) return false;
         Booking booking = (Booking) obj;
         return id != null && Objects.equals(id, booking.id);
     }

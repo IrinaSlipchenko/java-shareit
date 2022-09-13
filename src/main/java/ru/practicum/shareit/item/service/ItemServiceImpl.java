@@ -2,7 +2,9 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
+import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.model.Comment;
@@ -13,6 +15,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -23,17 +26,31 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
 
+    private final BookingRepository bookingRepository;
+
 
     @Override
-    public Item findItemById(Long id) {
-        return itemRepository.findById(id)
+    public Item findItemById(Long id, Long userId) {
+        Item item = itemRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Item not found"));
+        if (Objects.equals(item.getOwner().getId(), userId)) {
+            List<Booking> bookings = bookingRepository.findAllByItem(item);
+            item.setLastBooking(getLastBooking(bookings));
+            item.setNextBooking(getNextBooking(bookings));
+        }
+        return item;
     }
 
     @Override
     public List<Item> findAll(Long userId) {
-        return itemRepository.findAll().stream().filter(item ->
-                item.getOwner().getId().equals(userId)).collect(Collectors.toList());
+
+        return itemRepository.findAllByOwnerId(userId).stream()
+                .peek(item -> {
+                    List<Booking> bookings = bookingRepository.findAllByItem(item);
+                    item.setLastBooking(getLastBooking(bookings));
+                    item.setNextBooking(getNextBooking(bookings));
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -43,7 +60,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item update(Item updateItem) {
-        Item oldItem = findItemById(updateItem.getId());
+        Item oldItem = findItemById(updateItem.getId(), updateItem.getOwner().getId());
         if (!oldItem.getOwner().equals(updateItem.getOwner())) {
             throw new NotFoundException("wrong owner");
         }
@@ -70,13 +87,18 @@ public class ItemServiceImpl implements ItemService {
         Item item = comment.getItem();
         user.getBookings().stream().filter(booking ->
                         Objects.equals(booking.getItem(), item) &&
-                        Objects.equals(booking.getStatus(), Status.APPROVED) &&
-                        booking.getStart().isBefore(LocalDateTime.now()))
+                                Objects.equals(booking.getStatus(), Status.APPROVED) &&
+                                booking.getStart().isBefore(LocalDateTime.now()))
                 .findFirst().orElseThrow(() -> new ValidationException("Only bookmakers can create comments"));
         return commentRepository.save(comment);
     }
 
-    public void patchItem(Item updateItem, Item oldItem) {
+    @Override
+    public List<Comment> findCommentByItem(Item item) {
+        return commentRepository.findAllByItem(item);
+    }
+
+    private void patchItem(Item updateItem, Item oldItem) {
         if (updateItem.getName() != null) {
             oldItem.setName(updateItem.getName());
         }
@@ -86,5 +108,37 @@ public class ItemServiceImpl implements ItemService {
         if (updateItem.getAvailable() != null) {
             oldItem.setAvailable(updateItem.getAvailable());
         }
+    }
+
+    private Booking getNextBooking(List<Booking> bookings) {
+        LocalDateTime current = LocalDateTime.now();
+
+        return bookings.stream()
+                .sorted()
+                .filter(booking -> booking.getStart().isAfter(current))
+                .findFirst().orElse(null);
+
+//        if(nextBooking == null) return null;
+//
+//        return ShortBookingDto.builder()
+//                .id(nextBooking.getId())
+//                .bookerId(nextBooking.getBooker().getId())
+//                .build();
+    }
+
+    private Booking getLastBooking(List<Booking> bookings) {
+        LocalDateTime current = LocalDateTime.now();
+
+        return bookings.stream()
+                .sorted(Comparator.comparing(Booking::getEnd).reversed())
+                .filter(booking -> booking.getEnd().isBefore(current))
+                .findFirst().orElse(null);
+
+//        if(lastBooking == null) return null;
+//
+//        return ShortBookingDto.builder()
+//                .id(lastBooking.getId())
+//                .bookerId(lastBooking.getBooker().getId())
+//                .build();
     }
 }

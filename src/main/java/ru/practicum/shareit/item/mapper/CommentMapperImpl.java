@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class CommentMapperImpl implements CommentMapper{
+public class CommentMapperImpl implements CommentMapper {
     private final UserService userService;
     private final ItemService itemService;
 
@@ -22,7 +22,7 @@ public class CommentMapperImpl implements CommentMapper{
         return Comment.builder()
                 .text(commentDto.getText())
                 .author(userService.findUserById(userId))
-                .item(itemService.findItemById(itemId))
+                .item(itemService.findItemById(itemId, null))
                 .created(LocalDateTime.now())
                 .build();
     }

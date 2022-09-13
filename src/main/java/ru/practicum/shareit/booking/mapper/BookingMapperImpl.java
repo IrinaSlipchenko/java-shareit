@@ -25,7 +25,7 @@ public class BookingMapperImpl {
         return Booking.builder()
                 .start(bookingInputDto.getStart())
                 .end(bookingInputDto.getEnd())
-                .item(itemService.findItemById(bookingInputDto.getItemId()))
+                .item(itemService.findItemById(bookingInputDto.getItemId(), null))
                 .booker(userService.findUserById(bookerId))
                 .build();
     }
