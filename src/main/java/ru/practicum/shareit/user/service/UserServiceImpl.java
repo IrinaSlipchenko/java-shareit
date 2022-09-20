@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
@@ -15,6 +16,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
+
     @Override
     public User findUserById(Long id) {
         return userRepository.findById(id)
@@ -22,45 +24,46 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User create(User user) {
-        if (user.getName() == null || user.getEmail() == null) {
-            throw new ValidationException("invalid fields");
-        }
-        return userRepository.create(user);
-    }
-
-    @Override
-    public User update(User user, Long id) {
-        User oldUser = findUserById(id);
-        User newUser;
-        if (user.getEmail() == null) {
-            newUser = User.builder()
-                    .id(oldUser.getId())
-                    .name(user.getName())
-                    .email(oldUser.getEmail())
-                    .build();
-            return userRepository.update(newUser);
-        } else {
-            if (userRepository.isEmailInUse(user.getEmail())) {
-                throw new ConflictException("email already exist");
-            }
-            newUser = User.builder()
-                    .id(oldUser.getId())
-                    .name(user.getName() != null ? user.getName() : oldUser.getName())
-                    .email(user.getEmail())
-                    .build();
-            return userRepository.update(newUser, oldUser.getEmail());
-        }
+    public List<User> findAll() {
+        return userRepository.findAll();
     }
 
     @Override
     public void delete(Long id) {
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
     @Override
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public User create(User user) {
+        if (user.getName() == null || user.getEmail() == null) {
+            throw new ValidationException("invalid fields");
+        }
+
+        try {
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConflictException("email already in use");
+        }
+    }
+
+    @Override
+    public User update(User updateUser, Long id) {
+        User oldUser = findUserById(id);
+        patchUser(updateUser, oldUser);  // mutate old user
+        try {
+            return userRepository.save(oldUser);
+        } catch (DataIntegrityViolationException e) {
+            throw new ConflictException("email already in use");
+        }
+    }
+
+    private void patchUser(User updateUser, User oldUser) {
+        if (updateUser.getName() != null) {
+            oldUser.setName(updateUser.getName());
+        }
+        if (updateUser.getEmail() != null) {
+            oldUser.setEmail(updateUser.getEmail());
+        }
     }
 
 }

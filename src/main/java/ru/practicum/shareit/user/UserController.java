@@ -10,9 +10,7 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * The class helps listen to user request at "/users"
- */
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
