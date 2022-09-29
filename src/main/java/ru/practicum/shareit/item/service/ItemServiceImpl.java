@@ -25,9 +25,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
-
     private final BookingRepository bookingRepository;
-
 
     @Override
     public Item findItemById(Long id, Long userId) {
