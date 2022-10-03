@@ -12,7 +12,7 @@ public interface BookingService {
 
     Booking approveBooking(Long bookingId, Long userId, Boolean approved);
 
-    List<Booking> allBooking(State state, Long userId);
+    List<Booking> allBooking(Integer from, Integer size, State state, Long userId);
 
-    List<Booking> allBookingByOwner(State state, Long userId);
+    List<Booking> allBookingByOwner(Integer from, Integer size, State state, Long userId);
 }

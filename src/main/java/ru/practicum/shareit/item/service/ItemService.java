@@ -10,7 +10,7 @@ public interface ItemService {
 
     Item create(Item item);
 
-    List<Item> findAll(Long id);
+    List<Item> findAll(Integer from, Integer size, Long id);
 
     Item update(Item item);
 

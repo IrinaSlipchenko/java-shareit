@@ -2,9 +2,9 @@ package ru.practicum.shareit.requests.mapper;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.requests.dto.RequestOutputDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.requests.dto.RequestInputDto;
-import ru.practicum.shareit.requests.dto.RequestOutputDto;
 import ru.practicum.shareit.requests.model.ItemRequest;
 import ru.practicum.shareit.user.service.UserService;
 
