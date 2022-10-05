@@ -48,6 +48,7 @@ class UserServiceImplTest {
     void findUserByIdThrowException(){
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
+
         assertThrows(NotFoundException.class, ()->userService.findUserById(anyLong()));
     }
 

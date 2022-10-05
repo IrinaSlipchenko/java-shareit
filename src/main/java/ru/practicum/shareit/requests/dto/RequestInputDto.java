@@ -1,11 +1,14 @@
 package ru.practicum.shareit.requests.dto;
 
 
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestInputDto {
 
     @NotBlank

@@ -14,7 +14,4 @@ class ItemMapperImplTest {
     void toItemDto() {
     }
 
-    @Test
-    void testToItemDto() {
-    }
 }

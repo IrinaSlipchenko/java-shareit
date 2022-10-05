@@ -6,9 +6,8 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.mapper.UserMapperImpl;
 import ru.practicum.shareit.user.model.User;
+import static org.junit.jupiter.api.Assertions.*;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 class UserMapperImplTest {
     private User user;
@@ -34,16 +33,17 @@ class UserMapperImplTest {
     public void toUserDto() {
         UserDto testUserDto = userMapper.toUserDto(user);
 
-        assertThat(testUserDto.getId(), equalTo(userDto.getId()));
-        assertThat(testUserDto.getName(), equalTo(userDto.getName()));
-        assertThat(testUserDto.getEmail(), equalTo(userDto.getEmail()));
+        assertEquals(testUserDto.getName(), userDto.getName());
+        assertEquals(testUserDto.getEmail(), userDto.getEmail());
+        assertEquals(testUserDto.getId(), userDto.getId());
+
     }
 
     @Test
     void toUser() {
         User testUser = userMapper.toUser(userDto);
 
-        assertThat(testUser.getName(), equalTo(user.getName()));
-        assertThat(testUser.getEmail(), equalTo(user.getEmail()));
+        assertEquals(testUser.getName(), user.getName());
+        assertEquals(testUser.getEmail(), user.getEmail());
     }
 }
