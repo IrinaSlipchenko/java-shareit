@@ -33,19 +33,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(MockitoExtension.class)
 class UserControllerTest {
-
     @Mock
     private UserService userService;
     @Mock
     private UserMapper userMapper;
-
     @InjectMocks
     private UserController controller;
 
     private final ObjectMapper mapper = new ObjectMapper();
-
     private MockMvc mvc;
-
     private UserDto userDto;
     private User user;
 
@@ -82,10 +78,9 @@ class UserControllerTest {
 
     @Test
     void create() throws Exception{
-
-        when(userMapper.toUserDto(userService.create(userMapper.toUser(any(UserDto.class)))))
+        when(userMapper.toUserDto(userService.create(
+                userMapper.toUser(any(UserDto.class)))))
                 .thenReturn(userDto);
-
 
         mvc.perform(post("/users")
                         .content(mapper.writeValueAsString(userDto))
@@ -96,7 +91,6 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
                 .andExpect(jsonPath("$.email", is(userDto.getEmail())));
-
     }
 
     @Test

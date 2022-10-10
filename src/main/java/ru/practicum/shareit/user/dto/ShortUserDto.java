@@ -8,8 +8,8 @@ import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 public class ShortUserDto {
     private Long id;
