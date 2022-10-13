@@ -28,7 +28,7 @@ class BookingServiceImplTest {
     @InjectMocks
     BookingServiceImpl bookingService;
 
-    Long NO_SUCH_USER_EXISTS = 137L;
+    public static final Long NO_SUCH_USER_EXISTS = 137L;
 
     User user = User.builder()
             .id(1L)
