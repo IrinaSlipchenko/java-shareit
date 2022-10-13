@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import static org.mockito.Mockito.*;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -25,8 +23,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -77,7 +74,7 @@ class UserControllerTest {
     }
 
     @Test
-    void create() throws Exception{
+    void create() throws Exception {
         when(userMapper.toUserDto(userService.create(
                 userMapper.toUser(any(UserDto.class)))))
                 .thenReturn(userDto);
@@ -111,7 +108,7 @@ class UserControllerTest {
     }
 
     @Test
-    void delete() throws Exception{
+    void delete() throws Exception {
         doNothing().when(userService).delete(anyLong());
 
         mvc.perform(MockMvcRequestBuilders.delete("/users/{id}", 1L)

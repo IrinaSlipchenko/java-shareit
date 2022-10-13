@@ -1,11 +1,11 @@
 package ru.practicum.shareit.item;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.practicum.shareit.booking.dto.ShortBookingDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,65 +35,75 @@ class ItemMapperImplTest {
     private CommentMapper commentMapper;
     @Mock
     private ItemService itemService;
-
     @InjectMocks
     private ItemMapperImpl itemMapper;
+    Item item;
+    CommentDto commentDto1;
+    CommentDto commentDto2;
+    ItemDto itemDto;
+    User owner;
+    ItemRequest itemRequest;
 
-    Item item = Item.builder()
-            .id(2L)
-            .name("Санки")
-            .description("Санки детские с ручкой")
-            .available(true)
-            .owner(User.builder()
-                    .id(22L)
-                    .name("Kristina")
-                    .email("Kris1990@gmail.com")
-                    .build())
-            .lastBooking(Booking.builder()
-                    .id(77L)
-                    .booker(User.builder()
-                            .id(88L)
-                            .build())
-                    .build())
-            .nextBooking(Booking.builder()
-                    .id(101L)
-                    .booker(User.builder()
-                            .id(99L)
-                            .build())
-                    .build())
-            .itemRequest(ItemRequest.builder()
-                    .id(125L)
-                    .build())
-            .build();
+    @BeforeEach
+    void setUp() {
 
-    CommentDto commentDto1 = CommentDto.builder()
-            .id(5L)
-            .text("Очень нужная вещь")
-            .authorName("Tom")
-            .created(LocalDateTime.now())
-            .build();
+        item = Item.builder()
+                .id(2L)
+                .name("Санки")
+                .description("Санки детские с ручкой")
+                .available(true)
+                .owner(User.builder()
+                        .id(22L)
+                        .name("Kristina")
+                        .email("Kris1990@gmail.com")
+                        .build())
+                .lastBooking(Booking.builder()
+                        .id(77L)
+                        .booker(User.builder()
+                                .id(88L)
+                                .build())
+                        .build())
+                .nextBooking(Booking.builder()
+                        .id(101L)
+                        .booker(User.builder()
+                                .id(99L)
+                                .build())
+                        .build())
+                .itemRequest(ItemRequest.builder()
+                        .id(125L)
+                        .build())
+                .build();
 
-    CommentDto commentDto2 = CommentDto.builder()
-            .id(6L)
-            .text("Тестовый коммент")
-            .authorName("James")
-            .created(LocalDateTime.now().plusHours(1))
-            .build();
+        commentDto1 = CommentDto.builder()
+                .id(5L)
+                .text("Очень нужная вещь")
+                .authorName("Tom")
+                .created(LocalDateTime.now())
+                .build();
 
-    ItemDto itemDto = ItemDto.builder()
-            .name("Санки")
-            .requestId(3L)
-            .build();
+        commentDto2 = CommentDto.builder()
+                .id(6L)
+                .text("Тестовый коммент")
+                .authorName("James")
+                .created(LocalDateTime.now().plusHours(1))
+                .build();
 
-    User owner = User.builder()
-            .id(1L)
-            .name("Nina")
-            .email("nina2009@yandex.ru")
-            .build();
+        itemDto = ItemDto.builder()
+                .name("Санки")
+                .requestId(3L)
+                .build();
 
-    ItemRequest itemRequest = ItemRequest.builder()
-            .id(3L)
-            .build();
+        owner = User.builder()
+                .id(1L)
+                .name("Nina")
+                .email("nina2009@yandex.ru")
+                .build();
+
+        itemRequest = ItemRequest.builder()
+                .id(3L)
+                .build();
+    }
+
     @Test
     void toItem() {
         when(userService.findUserById(anyLong())).thenReturn(owner);
@@ -114,8 +124,8 @@ class ItemMapperImplTest {
 
         assertEquals(item.getName(), result.getName());
         assertEquals(item.getDescription(), result.getDescription());
-        assertEquals(ShortBookingDto.builder()
-                .id(77L).bookerId(88L).build(), result.getLastBooking());
+        assertEquals(item.getLastBooking().getId(), result.getLastBooking().getId());
+        assertEquals(item.getNextBooking().getId(), result.getNextBooking().getId());
         assertEquals(List.of(commentDto1, commentDto2), result.getComments());
     }
 

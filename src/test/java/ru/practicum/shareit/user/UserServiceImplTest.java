@@ -23,10 +23,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
     @Mock
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @InjectMocks
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
     private User user;
 
     @BeforeEach
@@ -48,12 +48,13 @@ class UserServiceImplTest {
         verify(userRepository, times(1)).findById(anyLong());
         assertEquals(user.getName(), result.getName());
     }
+
     @Test
-    void findUserByIdThrowException(){
+    void findUserByIdThrowException() {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(NotFoundException.class, ()->userService.findUserById(anyLong()));
+        assertThrows(NotFoundException.class, () -> userService.findUserById(anyLong()));
     }
 
 
@@ -82,16 +83,17 @@ class UserServiceImplTest {
         assertNotNull(result);
         assertEquals(user, result);
     }
+
     @Test
-    void create_throws_whenNameIsNull(){
+    void create_throws_whenNameIsNull() {
         User badUser = User.builder().build();
-        assertThrows(ValidationException.class, ()-> userService.create(badUser));
+        assertThrows(ValidationException.class, () -> userService.create(badUser));
     }
 
     @Test
-    void create_throws_whenSaveThrow(){
+    void create_throws_whenSaveThrow() {
         when(userRepository.save(user)).thenThrow(DataIntegrityViolationException.class);
-        assertThrows(ConflictException.class, ()-> userService.create(user));
+        assertThrows(ConflictException.class, () -> userService.create(user));
     }
 
     @Test
@@ -105,11 +107,12 @@ class UserServiceImplTest {
         assertNotNull(result);
         assertEquals(user, result);
     }
+
     @Test
-    void update_throws_whenUpdateThrow(){
+    void update_throws_whenUpdateThrow() {
         when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepository.save(user)).thenThrow(DataIntegrityViolationException.class);
 
-        assertThrows(ConflictException.class, ()-> userService.update(user, 1L));
+        assertThrows(ConflictException.class, () -> userService.update(user, 1L));
     }
 }

@@ -66,5 +66,4 @@ public class ItemController {
     public List<ItemDto> search(@RequestParam("text") String text) {
         return itemMapper.toItemDto(itemService.searchByKeyword(text));
     }
-
 }
