@@ -1,7 +1,9 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.OffsetLimitPageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -25,9 +27,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
-
     private final BookingRepository bookingRepository;
-
 
     @Override
     public Item findItemById(Long id, Long userId) {
@@ -42,9 +42,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> findAll(Long userId) {
+    public List<Item> findAll(Integer from, Integer size, Long userId) {
+        Pageable pageable = OffsetLimitPageable.of(from, size);
 
-        return itemRepository.findAllByOwnerId(userId).stream()
+        return itemRepository.findAllByOwnerId(userId, pageable).stream()
                 .peek(item -> {
                     List<Booking> bookings = bookingRepository.findAllByItem(item);
                     item.setLastBooking(getLastBooking(bookings));

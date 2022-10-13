@@ -56,13 +56,14 @@ public class ItemController {
     }
 
     @GetMapping
-    public List<ItemDto> findAll(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
-        return itemMapper.toItemDto(itemService.findAll(userId));
+    public List<ItemDto> findAll(@RequestParam(defaultValue = "0") Integer from,
+                                 @RequestParam(defaultValue = "10") Integer size,
+                                 @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+        return itemMapper.toItemDto(itemService.findAll(from, size, userId));
     }
 
     @GetMapping("/search")
     public List<ItemDto> search(@RequestParam("text") String text) {
         return itemMapper.toItemDto(itemService.searchByKeyword(text));
     }
-
 }

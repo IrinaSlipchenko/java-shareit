@@ -1,7 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import ru.practicum.shareit.OffsetLimitPageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.model.Status;
@@ -74,27 +77,26 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> allBooking(State state, Long userId) {
+    public List<Booking> allBooking(Integer from, Integer size, State state, Long userId) {
+        Pageable pageable = OffsetLimitPageable.of(from, size, Sort.by(Sort.Direction.DESC, "start"));
 
         User user = userService.findUserById(userId);
 
-        List<Booking> bookings = bookingRepository.findAllByBookerOrderByStartDesc(user);
+        List<Booking> bookings = bookingRepository.findAllByBooker(user, pageable);
 
         return getBookingsByState(state, bookings);
     }
 
     @Override
-    public List<Booking> allBookingByOwner(State state, Long userId) {
+    public List<Booking> allBookingByOwner(Integer from, Integer size, State state, Long userId) {
+        Pageable pageable = OffsetLimitPageable.of(from, size,
+                Sort.by(Sort.Direction.DESC, "start"));
 
         User user = userService.findUserById(userId);
 
         Set<Item> items = user.getItems();
 
-        List<Booking> bookings = items.stream()
-                .map(bookingRepository::findAllByItem)
-                .flatMap(List::stream)
-                .sorted()
-                .collect(Collectors.toList());
+        List<Booking> bookings = bookingRepository.findAllByItemIn(items, pageable);
 
         return getBookingsByState(state, bookings);
     }

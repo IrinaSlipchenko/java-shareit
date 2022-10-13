@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.requests.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
@@ -22,6 +23,8 @@ public class ItemMapperImpl implements ItemMapper {
     private final ItemService itemService;
     private final CommentMapper commentMapper;
 
+    private final ItemRequestServiceImpl itemRequestService;
+
     @Override
     public Item toItem(ItemDto itemDto, Long userId) {
         return Item.builder()
@@ -29,6 +32,7 @@ public class ItemMapperImpl implements ItemMapper {
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
                 .owner(userService.findUserById(userId))
+                .itemRequest(itemRequestService.findItemRequestById(itemDto.getRequestId()))
                 .build();
     }
 
@@ -36,6 +40,7 @@ public class ItemMapperImpl implements ItemMapper {
     public ItemDto toItemDto(Item item) {
         List<Comment> comments = itemService.findCommentByItem(item);
         List<CommentDto> commentsDto = commentMapper.toCommentDto(comments);
+
 
         return ItemDto.builder()
                 .id(item.getId())
@@ -45,6 +50,7 @@ public class ItemMapperImpl implements ItemMapper {
                 .lastBooking(getShortBookingDto(item.getLastBooking()))
                 .nextBooking(getShortBookingDto(item.getNextBooking()))
                 .comments(commentsDto)
+                .requestId(item.getItemRequest() == null ? null : item.getItemRequest().getId())
                 .build();
     }
 

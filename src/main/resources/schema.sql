@@ -5,13 +5,22 @@ CREATE TABLE IF NOT EXISTS users
     email VARCHAR(100) UNIQUE NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS requests
+(
+    id                 BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    description        VARCHAR NOT NULL,
+    request_creator_id BIGINT REFERENCES users (id),
+    created            TIMESTAMP WITHOUT TIME ZONE
+);
+
 CREATE TABLE IF NOT EXISTS items
 (
     id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
     description VARCHAR      NOT NULL,
     available   BOOL DEFAULT FALSE,
-    owner_id    BIGINT REFERENCES users (id)
+    owner_id    BIGINT REFERENCES users (id),
+    request_id  BIGINT REFERENCES requests(id)
 );
 
 
