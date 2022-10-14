@@ -63,7 +63,8 @@ public class ItemController {
     }
 
     @GetMapping("/search")
-    public List<ItemDto> search(@RequestParam("text") String text) {
+    public List<ItemDto> search(@RequestParam("text") String text,
+                                @RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemMapper.toItemDto(itemService.searchByKeyword(text));
     }
 }

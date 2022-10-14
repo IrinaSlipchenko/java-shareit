@@ -47,7 +47,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Booking findBookingById(Long bookingId, Long userId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new NotFoundException("booking not found"));
+                .orElseThrow(() -> new NotFoundException("booking Мой сервер работает  not found"));
 
         if (Objects.equals(booking.getBooker().getId(), userId) ||
                 Objects.equals(booking.getItem().getOwner().getId(), userId)) {
