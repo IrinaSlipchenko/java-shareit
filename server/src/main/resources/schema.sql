@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS items
     description VARCHAR      NOT NULL,
     available   BOOL DEFAULT FALSE,
     owner_id    BIGINT REFERENCES users (id),
-    request_id  BIGINT REFERENCES requests(id)
+    request_id  BIGINT REFERENCES requests (id)
 );
 
 

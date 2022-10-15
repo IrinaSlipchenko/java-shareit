@@ -186,22 +186,4 @@ class ItemControllerTest {
                 .andExpect(jsonPath("$[0].description", is(itemDto.getDescription())));
     }
 
-    @Test
-    void search() throws Exception {
-
-        when(itemMapper.toItemDto(itemService.searchByKeyword(anyString())))
-                .thenReturn(List.of(itemDto));
-
-        mvc.perform(get("/items/search")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .characterEncoding(StandardCharsets.UTF_8)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .param("text", "Test"))
-
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()", is(1)))
-                .andExpect(jsonPath("$[0].name", is(itemDto.getName())))
-                .andExpect(jsonPath("$[0].description", is(itemDto.getDescription())));
-
-    }
 }

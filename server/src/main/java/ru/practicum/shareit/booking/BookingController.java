@@ -9,8 +9,6 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 
@@ -22,8 +20,8 @@ public class BookingController {
     private final BookingMapper bookingMapper;
 
     @PostMapping
-    public BookingOutputDto create(@Valid @RequestBody BookingInputDto bookingInputDto,
-                                   @RequestHeader("X-Sharer-User-Id") @NotNull Long bookerId) {
+    public BookingOutputDto create(@RequestBody BookingInputDto bookingInputDto,
+                                   @RequestHeader("X-Sharer-User-Id") Long bookerId) {
 
         Booking booking = bookingMapper.toBooking(bookingInputDto, bookerId);
         return bookingMapper.toBookingDto(bookingService.create(booking));
@@ -31,7 +29,7 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public BookingOutputDto patchBooking(@PathVariable("bookingId") Long bookingId,
-                                         @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                                         @RequestHeader("X-Sharer-User-Id") Long userId,
                                          @RequestParam("approved") Boolean approved) {
         Booking booking = bookingService.approveBooking(bookingId, userId, approved);
         return bookingMapper.toBookingDto(booking);
@@ -39,7 +37,7 @@ public class BookingController {
 
     @GetMapping("/{bookingId}")
     public BookingOutputDto findBooking(@PathVariable("bookingId") Long bookingId,
-                                        @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                        @RequestHeader("X-Sharer-User-Id") Long userId) {
 
         Booking booking = bookingService.findBookingById(bookingId, userId);
         return bookingMapper.toBookingDto(booking);
@@ -49,7 +47,7 @@ public class BookingController {
     public List<BookingOutputDto> allBooking(@RequestParam(defaultValue = "ALL") State state,
                                              @RequestParam(defaultValue = "0") Integer from,
                                              @RequestParam(defaultValue = "10") Integer size,
-                                             @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                             @RequestHeader("X-Sharer-User-Id") Long userId) {
         return bookingMapper.toBookingDto(bookingService.allBooking(from, size, state, userId));
     }
 
@@ -57,7 +55,7 @@ public class BookingController {
     public List<BookingOutputDto> allBookingByOwner(@RequestParam(defaultValue = "ALL") State state,
                                                     @RequestParam(defaultValue = "0") Integer from,
                                                     @RequestParam(defaultValue = "10") Integer size,
-                                                    @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                    @RequestHeader("X-Sharer-User-Id") Long userId) {
 
         return bookingMapper.toBookingDto(bookingService.allBookingByOwner(from, size, state, userId));
     }

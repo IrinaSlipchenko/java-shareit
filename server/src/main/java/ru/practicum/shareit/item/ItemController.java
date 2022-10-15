@@ -10,8 +10,6 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -23,8 +21,8 @@ public class ItemController {
     private final CommentMapper commentMapper;
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto createComment(@Valid @RequestBody CommentDto commentDto,
-                                    @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+    public CommentDto createComment(@RequestBody CommentDto commentDto,
+                                    @RequestHeader("X-Sharer-User-Id") Long userId,
                                     @PathVariable Long itemId) {
 
         Comment comment = commentMapper.toComment(commentDto, userId, itemId);
@@ -32,15 +30,15 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto,
-                          @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public ItemDto create(@RequestBody ItemDto itemDto,
+                          @RequestHeader("X-Sharer-User-Id") Long userId) {
         Item item = itemMapper.toItem(itemDto, userId);
         return itemMapper.toItemDto(itemService.create(item));
     }
 
     @PatchMapping("/{itemId}")
     public ItemDto update(@RequestBody ItemDto itemDto,
-                          @RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+                          @RequestHeader("X-Sharer-User-Id") Long userId,
                           @PathVariable Long itemId) {
 
         Item item = itemMapper.toItem(itemDto, userId);
@@ -49,7 +47,7 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDto findItem(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+    public ItemDto findItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                             @PathVariable("itemId") Long itemId) {
         Item item = itemService.findItemById(itemId, userId);
         return itemMapper.toItemDto(item);
@@ -58,7 +56,7 @@ public class ItemController {
     @GetMapping
     public List<ItemDto> findAll(@RequestParam(defaultValue = "0") Integer from,
                                  @RequestParam(defaultValue = "10") Integer size,
-                                 @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
         return itemMapper.toItemDto(itemService.findAll(from, size, userId));
     }
 

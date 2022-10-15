@@ -10,8 +10,6 @@ import ru.practicum.shareit.requests.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -24,14 +22,14 @@ public class ItemRequestController {
     private final UserService userService;
 
     @PostMapping
-    public RequestOutputDto create(@Valid @RequestBody RequestInputDto requestInputDto,
-                                   @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public RequestOutputDto create(@RequestBody RequestInputDto requestInputDto,
+                                   @RequestHeader("X-Sharer-User-Id") Long userId) {
         ItemRequest itemRequest = requestMapper.toItemRequest(requestInputDto, userId);
         return requestMapper.toItemRequestDto(requestService.create(itemRequest));
     }
 
     @GetMapping("/{requestId}")
-    public RequestOutputDto findRequest(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId,
+    public RequestOutputDto findRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
                                         @PathVariable Long requestId) {
         User user = userService.findUserById(userId);  // user validation
 
@@ -39,7 +37,7 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public List<RequestOutputDto> findAll(@RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+    public List<RequestOutputDto> findAll(@RequestHeader("X-Sharer-User-Id") Long userId) {
 
         return requestMapper.toItemRequestDto(requestService.findAllItemRequest(userId));
     }
@@ -47,7 +45,7 @@ public class ItemRequestController {
     @GetMapping("/all")
     public List<RequestOutputDto> findPageOfThisSize(@RequestParam(defaultValue = "0") Integer from,
                                                      @RequestParam(defaultValue = "10") Integer size,
-                                                     @RequestHeader("X-Sharer-User-Id") @NotNull Long userId) {
+                                                     @RequestHeader("X-Sharer-User-Id") Long userId) {
 
         return requestMapper.toItemRequestDto(requestService.findPage(userId, from, size));
     }
